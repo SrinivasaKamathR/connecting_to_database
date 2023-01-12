@@ -1,20 +1,35 @@
 import React, { useRef } from "react";
 
-import classes from "./Form.module.css";
+import classes from "./AddMovie.module.css";
 
-const Form = () => {
+const AddMovie = (props) => {
   const title = useRef();
   const openingText = useRef();
   const releaseDate = useRef();
 
-  const onSubmitHandler = (event) => {
+  const onSubmitHandler = async (event) => {
     event.preventDefault();
 
-    console.log({
+    const newMovieData = {
       title: title.current.value,
       openingText: openingText.current.value,
       releaseDate: releaseDate.current.value,
-    });
+    };
+
+    const response = await fetch(
+      "https://connect-database-4a41b-default-rtdb.firebaseio.com/movies.json",
+      {
+        method: "POST",
+        body: JSON.stringify(newMovieData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await response.json();
+    console.log(data);
+
+    props.onAdd();
 
     title.current.value = "";
     openingText.current.value = "";
@@ -46,4 +61,4 @@ const Form = () => {
   );
 };
 
-export default Form;
+export default AddMovie;
